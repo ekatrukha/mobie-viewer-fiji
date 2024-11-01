@@ -130,9 +130,10 @@ public class ImageBVVViewer
 					public void windowClosing( WindowEvent ev )
 					{
 						bvv = null;
-						handle = null;
 						sacToBvvSource.clear();
 						showImages = false;
+						//handle.close();
+						handle = null;
 						for ( VisibilityListener listener : listeners )
 						{
 							listener.visibility( false );
@@ -147,6 +148,7 @@ public class ImageBVVViewer
 		{
 			bvv = null;
 			sacToBvvSource.clear();
+			handle.close();
 			// not really sure how to close it without Painter thread exception,
 			// but in reality it can just be ignored
 //			handle.getViewerPanel().stop();
