@@ -1144,13 +1144,14 @@ public class UserInterfaceHelper
 //				new Thread( () -> {
 //						display.imageVolumeViewer.showImages( checkBox.isSelected() );
 //				}).start();
+
 				new Thread( () -> {
-					display.imageVolumeViewer.showImagesBVV( checkBox.isSelected() );
+					display.imageBVVViewer.showImagesBVV( checkBox.isSelected() );
 				}).start();
+
 			}
 		} );
-
-		display.imageVolumeViewer.getListeners().add( new VisibilityListener()
+		display.imageBVVViewer.getListeners().add( new VisibilityListener()
 		{
 			@Override
 			public void visibility( boolean isVisible )
@@ -1161,6 +1162,18 @@ public class UserInterfaceHelper
 				});
 			}
 		} );
+
+//		display.imageVolumeViewer.getListeners().add( new VisibilityListener()
+//		{
+//			@Override
+//			public void visibility( boolean isVisible )
+//			{
+//				SwingUtilities.invokeLater( () ->
+//				{
+//					checkBox.setSelected( isVisible );
+//				});
+//			}
+//		} );
 
 
 		return checkBox;

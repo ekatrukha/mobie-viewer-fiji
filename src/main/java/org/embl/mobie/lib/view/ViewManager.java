@@ -63,6 +63,7 @@ import org.embl.mobie.lib.transform.viewer.*;
 import org.embl.mobie.ui.UserInterface;
 import org.embl.mobie.ui.WindowArrangementHelper;
 import org.embl.mobie.lib.view.save.ViewSaver;
+import org.embl.mobie.lib.volume.ImageBVVViewer;
 import org.embl.mobie.lib.volume.ImageVolumeViewer;
 import org.embl.mobie.lib.volume.SegmentVolumeViewer;
 import org.embl.mobie.lib.volume.UniverseManager;
@@ -695,6 +696,7 @@ public class ViewManager
 		imageDisplay.sliceViewer = sliceViewer;
 		imageDisplay.imageSliceView = new ImageSliceView( moBIE, imageDisplay );
 		initImageVolumeViewer( imageDisplay );
+		initImageBVVViewer( imageDisplay );
 	}
 
 	// compare with initSegmentationVolumeViewer
@@ -711,6 +713,13 @@ public class ViewManager
 		for ( SourceAndConverter< ? > sourceAndConverter : sourceAndConverters )
 			sacService.setMetadata( sourceAndConverter, ImageVolumeViewer.class.getName(), imageDisplay.imageVolumeViewer );
 
+	}
+	
+	private void initImageBVVViewer( ImageDisplay< ? > imageDisplay )
+	{
+		
+		imageDisplay.imageBVVViewer = new ImageBVVViewer(imageDisplay.sourceAndConverters());
+		imageDisplay.imageBVVViewer.showImagesBVV( imageDisplay.showImagesIn3d() );
 	}
 
 	private void initTableView( AbstractAnnotationDisplay< ? extends Annotation > display )
