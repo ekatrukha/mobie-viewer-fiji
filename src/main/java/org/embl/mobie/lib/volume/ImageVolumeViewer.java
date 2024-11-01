@@ -28,8 +28,19 @@
  */
 package org.embl.mobie.lib.volume;
 
+import bdv.BigDataViewer;
+import bdv.cache.CacheControl.CacheControls;
+import bdv.tools.brightness.ConverterSetup;
+import bdv.util.Bdv;
+import bdv.util.BdvFunctions;
+import bdv.util.BdvHandle;
+import bdv.viewer.ConverterSetups;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
+import bvv.vistools.Bvv;
+import bvv.vistools.BvvFunctions;
+import bvv.vistools.BvvHandle;
+import bvv.vistools.BvvStackSource;
 import de.embl.cba.util.CopyUtils;
 import ij.IJ;
 import ij.ImagePlus;
@@ -38,9 +49,13 @@ import ij3d.Content;
 import ij3d.ContentConstants;
 import ij3d.Image3DUniverse;
 import ij3d.UniverseListener;
+import mpicbg.spim.data.generic.AbstractSpimData;
+
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.converter.RealUnsignedByteConverter;
 import net.imglib2.display.ColorConverter;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.NativeType;
@@ -56,7 +71,13 @@ import org.embl.mobie.lib.serialize.display.VisibilityListener;
 import org.scijava.java3d.Transform3D;
 import org.scijava.java3d.View;
 import org.scijava.vecmath.Color3f;
+
+import sc.fiji.bdvpg.cache.AbstractGlobalCache;
+import sc.fiji.bdvpg.scijava.services.SourceAndConverterService;
 import sc.fiji.bdvpg.services.SourceAndConverterServices;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -64,8 +85,12 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.UIManager;
 
 public class ImageVolumeViewer
 {
@@ -144,6 +169,85 @@ public class ImageVolumeViewer
 					addSourceToUniverse( sac );
 				}
 			}
+		}
+	}
+	
+	public synchronized < T > void showImagesBVV( boolean show )
+	{
+		
+		this.showImages = show;
+
+		if ( showImages && universe == null )
+		{
+			//initUniverse();
+		}
+
+		for ( SourceAndConverter< ? > sac : sourceAndConverters )
+		{
+
+			Bvv bvv = BvvFunctions.show( Bvv.options().frameTitle( "test" ).dClipFar( 15000 ).maxCacheSizeInMB( 500 ));
+			BvvHandle handle = bvv.getBvvHandle();
+			
+//			Img<UnsignedShortType> dummyImg = ArrayImgs.unsignedShorts(2, 2, 2);
+//			dummyImg.forEach(t -> t.set(0));
+//
+//			//bvvOptions = bvvOptions.sourceTransform(new AffineTransform3D());
+//
+//			BvvStackSource<?> bss = BvvFunctions.show(dummyImg, "dummy", Bvv.options().frameTitle( "test" ));
+//
+//			BvvHandle handle = bss.getBvvHandle();
+
+			if ( sacToContent.containsKey( sac ) )
+			{
+				sacToContent.get( sac ).setVisible( show );
+			}
+			else
+			{
+				if ( show )
+				{
+//					AbstractGlobalCache vv = SourceAndConverterServices.getSourceAndConverterService().getCache();
+//					Set< AbstractSpimData< ? > > kk = SourceAndConverterServices.getSourceAndConverterService().getSpimDatasets();
+//					int vvv = kk.size();
+//					AbstractGlobalCache dd = SourceAndConverterServices.getSourceAndConverterService().getCache();
+					//BvvFunctions.show( sac );
+//					if (sac.getSpimSource().getType() instanceof UnsignedShortType) {
+//
+//						
+//						handle.getConverterSetups().put(sac, SourceAndConverterServices
+//							.getSourceAndConverterService().getConverterSetup(sac));
+//						handle .getViewerPanel().state().addSource(sac);
+//						
+//						handle .getViewerPanel().state().setSourceActive(sac, true);
+//					}
+					//BvvStackSource< ? > ddd = BvvFunctions.show( sac.getSpimSource() );
+					//BvvHandle handle = ddd.getBvvHandle();
+					//sac.asVolatile().getSpimSource();
+					BvvFunctions.show(BVVSourceToSpimDataWrapper.spimDataSourceWrap(sac.getSpimSource()), Bvv.options().addTo( bvv ));
+					//handle.getViewerPanel().state().addSource( sac.asVolatile().getSpimSource() );
+					//addSourceToUniverse( sac );
+				}
+			}
+		}
+		
+		
+//		this.showImages = show;
+//
+//		if ( showImages && universe == null )
+//		{
+//			initUniverse();
+//		}
+		if(show)
+		{
+//			BdvHandle bdv = BdvFunctions.show();
+//			 
+//			Bvv bvv = BvvFunctions.show( Bvv.options().
+//					frameTitle("testbvv"));
+			//BvvFunctions.show( sourceAndConverters.get( 0 ).getSpimSource() );
+//			for ( SourceAndConverter< ? > source : sourceAndConverters )
+//			{
+//				//BdvFunctions.show( source, 1, Bdv.options().frameTitle( "test" ).addTo( bdv ) );
+//				BvvFunctions.show( source.getSpimSource() );
+//			}
 		}
 	}
 

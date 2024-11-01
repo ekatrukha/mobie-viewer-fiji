@@ -1141,8 +1141,11 @@ public class UserInterfaceHelper
 			@Override
 			public void actionPerformed( ActionEvent e )
 			{
+//				new Thread( () -> {
+//						display.imageVolumeViewer.showImages( checkBox.isSelected() );
+//				}).start();
 				new Thread( () -> {
-						display.imageVolumeViewer.showImages( checkBox.isSelected() );
+					display.imageVolumeViewer.showImagesBVV( checkBox.isSelected() );
 				}).start();
 			}
 		} );
